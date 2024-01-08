@@ -5,6 +5,14 @@ const test = (req, res) => {
   });
 };
 
+const home = (req, res) => {
+  return res.status(200).json({
+    status: "success",
+    message: "Controlador del home de usuario",
+  });
+};
+
 module.exports = {
   test,
+  home,
 };
