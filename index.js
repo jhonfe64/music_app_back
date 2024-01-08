@@ -8,7 +8,7 @@ const artistRoutes = require("./routes/artist");
 const albumRoutes = require("./routes/album");
 
 const app = express();
-const port = 3000;
+const port = 3500;
 
 //middlewares
 app.use(cors());
