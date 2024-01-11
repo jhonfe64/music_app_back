@@ -17,7 +17,16 @@ const home = (req, res) => {
 
 //registrar usuario
 const signUp = async (req, res) => {
+
+
+
+
+
   const body = req.body;
+ 
+  
+
+
   const newUser = new User(body);
 
   try {
@@ -26,7 +35,7 @@ const signUp = async (req, res) => {
       $or: [{ email: newUser.email }, { nick: newUser.nick }],
     });
 
-    if (user && user.length > 0) {
+    if (user && user.length >= 1) {
       return res.status(409).json({
         status: "error",
         message: "El correo o el nick ya estan registrados",
@@ -34,19 +43,26 @@ const signUp = async (req, res) => {
     }
 
     //encriptar la contaseña
+    const hash = bcrypt.hashSync(newUser.password, 10);
+    newUser.password = hash;
+    //Guardar el objeto
+    const userSaved = (await newUser.save()).toObject();
+    delete userSaved.password;
+
+    if (userSaved) {
+      return res.status(200).json({
+        status: "success",
+        user: userSaved,
+      });
+    }
+
     //guardar
   } catch (error) {
     return res.status(500).json({
       status: "error",
-      message: "No se pudo guardar el usuario",
+      message: "No se pudo guardar el usuario" + error,
     });
   }
-
-  return res.status(200).json({
-    status: "success",
-    message: "Controlador de registro de usuario",
-    user: body,
-  });
 };
 
 module.exports = {
