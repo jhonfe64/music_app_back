@@ -44,7 +44,7 @@ const signUp = async (req, res) => {
       $or: [{ email: newUser.email }, { nick: newUser.nick }],
     });
     if (user && user.length >= 1) {
-      return res.status(409).json({
+      return res.status(409).send({
         status: "error",
         message: "El correo o el nick ya estan registrados",
       });
