@@ -2,6 +2,7 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const validateLong = require("../helpers/validateLong");
 const validateEmail = require("../helpers/validateEmail");
+const formatSimpleBody = require("../helpers/formatSimpleBody");
 
 const test = (req, res) => {
   return res.status(200).send({
@@ -20,8 +21,13 @@ const home = (req, res) => {
 //registrar usuario
 const signUp = async (req, res) => {
   const body = req.body;
-  //validar long del body
-  const isEmpty = validateLong(body);
+
+  //formatear el body
+  const formatedBody = formatSimpleBody(body);
+
+  //validar long del body formateado
+  const isEmpty = validateLong(formatedBody);
+
   if (isEmpty) {
     return res.status(400).json({
       status: "error",
@@ -29,7 +35,7 @@ const signUp = async (req, res) => {
     });
   }
   //verificar que sea un email
-  isEmail = validateEmail(body.email);
+  isEmail = validateEmail(formatedBody.email);
   if (!isEmail) {
     return res.status(400).json({
       status: "error",
@@ -37,7 +43,7 @@ const signUp = async (req, res) => {
     });
   }
   //crear el objeto usuario
-  const newUser = new User(body);
+  const newUser = new User(formatedBody);
   try {
     //verificar que el usuario no exista ya
     const user = await User.find({
@@ -52,6 +58,7 @@ const signUp = async (req, res) => {
     //encriptar la contaseña
     const hash = bcrypt.hashSync(newUser.password, 10);
     newUser.password = hash;
+
     //Guardar el objeto
     const userSaved = (await newUser.save()).toObject();
     delete userSaved.password;
