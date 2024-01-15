@@ -76,8 +76,48 @@ const signUp = async (req, res) => {
   }
 };
 
+//logear el usuario
+
+const login = (req, res) => {
+  const body = req.body;
+
+  const isEmpty = validateLong(body);
+
+  if (isEmpty) {
+    return res.status(400).json({
+      status: "error",
+      message: "Alguno de los campos esta vacio",
+    });
+  }
+
+  const isEmail = validateEmail(body.email);
+
+  if (!isEmail) {
+    return res.status(400).json({
+      status: "error",
+      message: "La direccion de email no es valida",
+    });
+  }
+
+  //Body formaateado
+  const formatedBody = formatSimpleBody(body);
+
+  //Peticion a la base de datos
+  //traer el usurio y comparar la clave de la base de datos con la que puso el usuario
+  //si es crear el token actualizar el objeto req y enviar a el usuario
+
+
+
+
+  return res.status(200).json({
+    status: "success",
+    message: "Se va logear un usuario",
+  });
+};
+
 module.exports = {
   test,
   home,
   signUp,
+  login,
 };
