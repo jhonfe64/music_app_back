@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const validateLong = require("../helpers/validateLong");
 const validateEmail = require("../helpers/validateEmail");
 const formatSimpleBody = require("../helpers/formatSimpleBody");
+const jwt = require("jwt-simple");
+const { createToken, secret } = require("../services/jwt");
 
 const test = (req, res) => {
   return res.status(200).send({
@@ -78,7 +80,7 @@ const signUp = async (req, res) => {
 
 //logear el usuario
 
-const login = (req, res) => {
+const login = async (req, res) => {
   const body = req.body;
 
   const isEmpty = validateLong(body);
@@ -102,17 +104,40 @@ const login = (req, res) => {
   //Body formaateado
   const formatedBody = formatSimpleBody(body);
 
-  //Peticion a la base de datos
-  //traer el usurio y comparar la clave de la base de datos con la que puso el usuario
-  //si es crear el token actualizar el objeto req y enviar a el usuario
+  try {
+    const user = await User.findOne({ email: formatedBody?.email }).select(
+      "+password"
+    );
+    if (!user && !user?._id) {
+      return res.status(404).json({
+        status: "error",
+        message: "Email incorrecto",
+      });
+    }
+    const pwdStatus = bcrypt.compareSync(formatedBody.password, user.password);
+    if (!pwdStatus) {
+      return res.status(401).json({
+        status: "unAuthorized",
+        message: "Contraseña incorrecta",
+      });
+    }
 
+    //crear el token y enviarlo al objeto req
+    const token = createToken(user);
 
-
-
-  return res.status(200).json({
-    status: "success",
-    message: "Se va logear un usuario",
-  });
+    return res.status(200).json({
+      status: "succes",
+      name: user.name,
+      nick: user.nick,
+      email: user.email,
+      token,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      status: "error",
+      message: "No se ha encontrado el usuario" + error,
+    });
+  }
 };
 
 module.exports = {
