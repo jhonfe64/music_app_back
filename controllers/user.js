@@ -58,7 +58,7 @@ const signUp = async (req, res) => {
       });
     }
     //encriptar la contaseña
-    const hash = bcrypt.hashSync(newUser.password, 10);
+    const hash = bcrypt.hashSync(newUser.password, 12);
     newUser.password = hash;
 
     //Guardar el objeto
@@ -87,7 +87,7 @@ const login = async (req, res) => {
 
   if (isEmpty) {
     return res.status(400).json({
-      status: "error",
+      status: "Bad request",
       message: "Alguno de los campos esta vacio",
     });
   }
@@ -96,7 +96,7 @@ const login = async (req, res) => {
 
   if (!isEmail) {
     return res.status(400).json({
-      status: "error",
+      status: "Bad request",
       message: "La direccion de email no es valida",
     });
   }
@@ -126,7 +126,7 @@ const login = async (req, res) => {
     const token = createToken(user);
 
     return res.status(200).json({
-      status: "succes",
+      status: "success",
       name: user.name,
       nick: user.nick,
       email: user.email,
