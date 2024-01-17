@@ -1,10 +1,10 @@
 const User = require("../models/user");
+const Artist = require("../models/artist");
 const bcrypt = require("bcrypt");
 const validateLong = require("../helpers/validateLong");
 const validateEmail = require("../helpers/validateEmail");
 const formatSimpleBody = require("../helpers/formatSimpleBody");
-const jwt = require("jwt-simple");
-const { createToken, secret } = require("../services/jwt");
+const { createToken } = require("../services/jwt");
 
 const test = (req, res) => {
   return res.status(200).send({
@@ -51,12 +51,26 @@ const signUp = async (req, res) => {
     const user = await User.find({
       $or: [{ email: newUser.email }, { nick: newUser.nick }],
     });
+
     if (user && user.length >= 1) {
       return res.status(409).send({
         status: "error",
         message: "El correo o el nick ya estan registrados",
       });
     }
+
+    const artist = await Artist.findOne({
+      $or: [{ email: formatedBody.email }, { artisticName: formatedBody.nick }],
+    });
+
+    if (artist && artist._id) {
+      return res.status(400).json({
+        status: "bad request",
+        message:
+          "Ya tienes una cuenta de artista, utiliza un correo y/o un nombre de usuario diferentes para registrarte como usuario",
+      });
+    }
+
     //encriptar la contaseña
     const hash = bcrypt.hashSync(newUser.password, 12);
     newUser.password = hash;
@@ -114,6 +128,7 @@ const login = async (req, res) => {
         message: "Email incorrecto",
       });
     }
+
     const pwdStatus = bcrypt.compareSync(formatedBody.password, user.password);
     if (!pwdStatus) {
       return res.status(401).json({
