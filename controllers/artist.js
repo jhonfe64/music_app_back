@@ -159,8 +159,36 @@ const login = async (req, res) => {
   }
 };
 
+//traer un usuario por id
+const single = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const artist = await Artist.findById(id);
+
+    if (!artist) {
+      return res.status(404).json({
+        status: "Not found",
+        message: "No se enncontro el artista",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Se va a optener la info de usuario por id",
+      artist,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      status: "Not found",
+      message: "No se encontro el artista",
+    });
+  }
+};
+
 module.exports = {
   test,
   signUp,
   login,
+  single,
 };
