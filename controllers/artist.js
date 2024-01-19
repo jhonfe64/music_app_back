@@ -144,8 +144,10 @@ const login = async (req, res) => {
 
     //crear el token y enviarlo al objeto req
     const token = createToken(artist);
+
     return res.status(200).json({
       status: "success",
+      id: artist._id,
       name: artist.name,
       artisticName: artist.artisticName,
       email: artist.email,
@@ -165,7 +167,6 @@ const single = async (req, res) => {
 
   try {
     const artist = await Artist.findById(id);
-
     if (!artist) {
       return res.status(404).json({
         status: "Not found",
@@ -175,7 +176,6 @@ const single = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      message: "Se va a optener la info de usuario por id",
       artist,
     });
   } catch (error) {
