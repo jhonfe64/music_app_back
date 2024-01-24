@@ -9,6 +9,6 @@ router.post("/sign-up", signUp);
 //logear artistas
 router.post("/login", login);
 //info de un artista
-router.get("/single/:id", single);
+router.get("/single", auth, single);
 
 module.exports = router;

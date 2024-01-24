@@ -163,8 +163,7 @@ const login = async (req, res) => {
 
 //traer un usuario por id
 const single = async (req, res) => {
-  const { id } = req.params;
-
+  const { id } = req.user;
   try {
     const artist = await Artist.findById(id);
     if (!artist) {
@@ -173,7 +172,6 @@ const single = async (req, res) => {
         message: "No se enncontro el artista",
       });
     }
-
     return res.status(200).json({
       status: "success",
       artist,

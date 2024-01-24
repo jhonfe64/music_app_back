@@ -1,5 +1,6 @@
 //se recibe el token en la cabercera en el objeto req
-const { createToken, secret } = "../services/jwt";
+const { secret } = require("../services/jwt");
+const jwt = require("jwt-simple");
 
 const auth = (req, res, next) => {
   if (!req.headers.authorization) {
@@ -15,13 +16,15 @@ const auth = (req, res, next) => {
 
   try {
     const payload = jwt.decode(token, secret);
+
     req.user = payload;
   } catch (error) {
     return res.status(404).json({
       status: "Unauthorized",
-      message: "Token invalido",
+      message: "Token invalido" + error,
     });
   }
+  next();
 };
 
 module.exports = auth;
