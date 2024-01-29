@@ -161,7 +161,7 @@ const login = async (req, res) => {
   }
 };
 
-//traer un usuario por id
+//traer un usuario por id el id se saca de las cabeceras al iniciar sesion
 const single = async (req, res) => {
   const { id } = req.user;
   try {
@@ -184,9 +184,84 @@ const single = async (req, res) => {
   }
 };
 
+//actualizar info de artista
+const update = async (req, res) => {
+  const { id } = req.user;
+  const body = req.body;
+
+  const formattedBody = formatSimpleBody(body);
+  const isEmpty = validateLong(formattedBody);
+
+  if (isEmpty) {
+    return res.status(400).json({
+      status: "Bad request",
+      message: "Hay campos vacios",
+    });
+  }
+
+  try {
+    const updatedArtist = await Artist.findOneAndUpdate(
+      { _id: id },
+      formattedBody,
+      { new: true }
+    );
+    if (!updatedArtist) {
+      return res.status(404).json({
+        status: "Not found",
+        message: "No se actualizó  el perfil",
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      updatedArtist,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      status: "Not found",
+      message: "No se encontro el artista",
+    });
+  }
+};
+
+//actualizar password de artista
+const password = async (req, res) => {
+  const { password } = req.body;
+  const { id } = req.user;
+
+  try {
+    const hash = bcrypt.hashSync(password, 12);
+
+    const updatedArtist = await Artist.findOneAndUpdate(
+      { _id: id },
+      { password: hash },
+      { new: true }
+    );
+
+    if (!updatedArtist) {
+      return res.status(404).json({
+        status: "Not found",
+        message: "No se encontro el artista",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Se va a actualizar la password",
+      artist: updatedArtist,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      status: "Not found",
+      message: "No se pudo actualizar la contraseña",
+    });
+  }
+};
+
 module.exports = {
   test,
   signUp,
   login,
   single,
+  update,
+  password,
 };

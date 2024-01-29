@@ -6,7 +6,7 @@ const auth = (req, res, next) => {
   if (!req.headers.authorization) {
     return res.status(404).json({
       status: "error",
-      message: "La cabecera no tiene token de autorizaciòn",
+      message: "La cabecera no tiene token de autorizaciòn" + error,
     });
   }
 
@@ -17,7 +17,9 @@ const auth = (req, res, next) => {
   try {
     const payload = jwt.decode(token, secret);
 
-    req.user = payload;
+    if (payload) {
+      req.user = payload;
+    }
   } catch (error) {
     return res.status(404).json({
       status: "Unauthorized",
