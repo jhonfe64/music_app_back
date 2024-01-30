@@ -246,7 +246,6 @@ const password = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      message: "Se va a actualizar la password",
       artist: updatedArtist,
     });
   } catch (error) {
