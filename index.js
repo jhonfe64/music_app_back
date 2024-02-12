@@ -10,6 +10,7 @@ const albumRoutes = require("./routes/album");
 const app = express();
 const port = 3500;
 
+
 //middlewares
 app.use(cors());
 app.use(express.json());
