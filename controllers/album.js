@@ -20,7 +20,12 @@ const musicGendre = async (req, res) => {
       status: "success",
       gendres: gendres,
     });
-  } catch (error) {}
+  } catch (error) {
+    return res.status(404).json({
+      status: "error",
+      message: "error " + error,
+    });
+  }
 };
 
 const upload = (req, res) => {
