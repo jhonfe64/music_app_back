@@ -18,13 +18,13 @@ const AlbumSchema = new Schema({
     type: string,
     required: true,
   },
+  gendre: {
+    type: string,
+    required: true,
+  },
   image: {
     type: String,
     default: "default.png",
-  },
-  releaseYear: {
-    type: String,
-    required: true,
   },
   created_at: {
     type: Date,

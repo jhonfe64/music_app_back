@@ -6,7 +6,7 @@ const auth = (req, res, next) => {
   if (!req.headers.authorization) {
     return res.status(404).json({
       status: "error",
-      message: "La cabecera no tiene token de autorizaciòn" + error,
+      message: "La cabecera no tiene token de autorizaciòn",
     });
   }
 
@@ -23,7 +23,7 @@ const auth = (req, res, next) => {
   } catch (error) {
     return res.status(404).json({
       status: "Unauthorized",
-      message: "Token invalido" + error,
+      message: "Token invalido",
     });
   }
   next();
