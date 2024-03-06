@@ -6,14 +6,14 @@
 const capitalize = require("capitalize");
 
 const formatSimpleBody = (body) => {
-    
   const formatedBody = {};
 
   for (key in body) {
     if (
       key !== "email" &&
       key !== "password" &&
-      typeof body[key] === "string"
+      typeof body[key] === "string" &&
+      key !== "artist"
     ) {
       formatedBody[key] = capitalize.words(body[key]);
     } else if (key === "email") {
