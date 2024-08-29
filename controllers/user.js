@@ -24,6 +24,7 @@ const home = (req, res) => {
 const signUp = async (req, res) => {
   const body = req.body;
 
+
   //formatear el body
   const formatedBody = formatSimpleBody(body);
 
